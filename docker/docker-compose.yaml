@@ -1,0 +1,159 @@
+version: "3"
+services:
+  nextcloud:
+    image: linuxserver/nextcloud:22.2.2
+    container_name: nextcloud
+    environment:
+      - PUID=911
+      - PGID=911
+      - TZ=Europe/Berlin
+    volumes:
+      - ${NEXTCLOUD_CONFIG}:/config
+      - ${NEXTCLOUD_DATA}:/data
+    ports:
+      - 999:443
+    restart: always
+  collabora:
+    image: collabora/code
+    container_name: collabora
+    restart: always
+    environment:
+      - domain=192.168.0.12:999 # the domain of my nextcloud instance (amended to be fictional)
+      - dictionaries=en_US
+    ports:
+      - "9980:9980"
+    volumes:
+      - ./collabora_config:/config
+  mariadb:
+    expose:
+      - 3306
+    container_name: mariadb
+    image: "mariadb:10.7.1"
+    restart: 'always'
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW --innodb-file-per-table=1 --skip-innodb-read-only-compressed
+    volumes:
+      - ${MARIADB_DATA}:/var/lib/mysql/
+      - ./mariadbconf:/var/docker/mariadb/conf
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin:latest
+    expose:
+      - 80
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mariadb
+    depends_on:
+      - mariadb
+  signal-cli-rest-api:
+    container_name: signal-cli-rest-api
+    restart: 'always'
+    image: bbernhard/signal-cli-rest-api:latest
+    environment:
+      - MODE=normal #supported modes: json-rpc, native, normal
+      #- AUTO_RECEIVE_SCHEDULE=0 22 * * * #enable this parameter on demand (see description below)
+    expose:
+      - 8080 #map docker port 8080 to host port 8080.
+    volumes:
+      - "${SIGNAL_DATA}:/home/.local/share/signal-cli"
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:v2.31.1
+    restart: 'always'
+    expose:
+      - 9090
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - ${PROMETHEUS_DATA}:/prometheus
+    command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml --storage.tsdb.retention.time=185d
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:7.5.7
+    restart: 'always'
+    expose:
+      - 3000
+    volumes:
+      - ./grafana-datasources:/etc/grafana/provisioning/datasources
+      - ${GRAFANA_DATA}:/var/lib/grafana
+  node-exporter:
+  # https://grafana.com/docs/grafana-cloud/quickstart/docker-compose-linux/
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    restart: always
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    expose:
+      - 9100
+  cadvisor:
+    image: google/cadvisor:latest
+    container_name: cadvisor
+    restart: always
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    expose:
+      - 8080
+  signal-webhook:
+    image: signal-webhook
+    container_name: signal-webhook
+    restart: always
+    expose:
+      - 8080
+    environment:
+      - SIGNAL_CLI_REST_API_BASE_URL=http://signal-cli-rest-api:8080
+      - SOURCE_NUMBER=${SIGNAL_SOURCE_NUMBER}
+      - TARGET_NUMBER=${SIGNAL_TARGET_NUMBER}
+  nextcloud-exporer:
+    image: xperimental/nextcloud-exporter
+    container_name: nextcloud-exporter
+    restart: always
+    expose:
+      - 9205
+    environment:
+      - NEXTCLOUD_SERVER=https://nextcloud:443
+      - NEXTCLOUD_USERNAME=${NEXTCLOUD_USERNAME}
+      - NEXTCLOUD_PASSWORD=${NEXTCLOUD_PASSWORD}
+      - NEXTCLOUD_TLS_SKIP_VERIFY=true
+  mysql-exporter:
+    image: prom/mysqld-exporter
+    container_name: mysql-exporter
+    restart: always
+    expose:
+      - 9104
+    environment:
+      - DATA_SOURCE_NAME=${DATA_SOURCE_NAME}
+  caddy:
+    image: caddy:2.4.6-alpine
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./caddy:/etc/caddy
+      - /home/julian/docker/site:/srv
+      - /home/julian/docker/caddy_data:/data
+      - /home/julian/docker/caddy_config:/config
+  fritz-exporter:
+    # https://github.com/pdreker/fritz_exporter/issues/62
+    image: pdreker/fritz_exporter:latest
+    container_name: fritz-exporter
+    restart: always
+    environment:
+      # - FRITZ_HOSTNAME='fritz.box'
+      - FRITZ_USERNAME=${FRITZBOX_USERNAME}
+      - FRITZ_PASSWORD=${FRITZBOX_PASSWORD}
+    expose:
+      - 9787

@@ -1,0 +1,7 @@
+docker/nc_config/
+docker/mysql/
+docker/mariadbconf/
+docker/mysql/
+.env
+atMessages/
+tmp.*
