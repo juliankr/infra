@@ -1,0 +1,24 @@
+{
+        local_certs
+        skip_install_trust
+}
+
+grafana.home: {
+	reverse_proxy grafana:3000
+}
+
+db.home: {
+ 	reverse_proxy phpmyadmin:80
+}
+
+signal.home: {
+	reverse_proxy signal-cli-rest-api:8080
+}
+
+nextcloud.home: {
+ 	reverse_proxy nextcloud:80
+}
+
+prometheus.home: {
+	reverse_proxy prometheus:9090
+}

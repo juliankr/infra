@@ -1,7 +1,12 @@
 docker/nc_config/
 docker/mysql/
-docker/mariadbconf/
-docker/mysql/
+docker/document_data/
+docker/document_log/
+docker/prometheus-data/
+docker/signal-cli/
+docker/grafana-data/
+docker/caddy_data/
+docker/caddy_config/
 .env
 atMessages/
 tmp.*
