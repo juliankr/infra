@@ -11,6 +11,8 @@ services:
       - MYSQL_PASSWORD=${DB_NEXTCLOUD_PASSWORD}
       - MYSQL_HOST=mariadb:3306
       - NEXTCLOUD_DATA_DIR=/data
+      - APACHE_RUN_USER=911
+      - APACHE_RUN_GROUP=911
     volumes:
       - ${NEXTCLOUD_CONFIG}:/var/www/html/
       - ${NEXTCLOUD_DATA}:/data
