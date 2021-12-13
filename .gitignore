@@ -1,4 +1,5 @@
 docker/nc_config/
+docker/nextcloud_config/
 docker/mysql/
 docker/document_data/
 docker/document_log/
