@@ -14,20 +14,9 @@ services:
     volumes:
       - ${NEXTCLOUD_CONFIG}:/var/www/html/
       - ${NEXTCLOUD_DATA}:/data
-    ports:
-      - 8088:80
+    expose:
+      - 80
     restart: always
-  collabora:
-    image: collabora/code
-    container_name: collabora
-    restart: always
-    environment:
-      - domain=192.168.0.12:999 # the domain of my nextcloud instance (amended to be fictional)
-      - dictionaries=en_US
-    ports:
-      - "9980:9980"
-    volumes:
-      - ./collabora_config:/config
   mariadb:
     expose:
       - 3306
