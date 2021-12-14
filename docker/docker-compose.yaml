@@ -108,17 +108,18 @@ services:
       - SIGNAL_CLI_REST_API_BASE_URL=http://signal-cli-rest-api:8080
       - SOURCE_NUMBER=${SIGNAL_SOURCE_NUMBER}
       - TARGET_NUMBER=${SIGNAL_TARGET_NUMBER}
-  nextcloud-exporer:
+  nextcloud-exporter:
     image: xperimental/nextcloud-exporter
     container_name: nextcloud-exporter
     restart: always
     expose:
       - 9205
     environment:
-      - NEXTCLOUD_SERVER=http://nextcloud:80
+      - NEXTCLOUD_SERVER=http://nextcloud
       - NEXTCLOUD_USERNAME=${NEXTCLOUD_USERNAME}
       - NEXTCLOUD_PASSWORD=${NEXTCLOUD_PASSWORD}
       - NEXTCLOUD_TLS_SKIP_VERIFY=true
+      - NEXTCLOUD_LISTEN_ADDRESS=":80"
   mysql-exporter:
     image: prom/mysqld-exporter
     container_name: mysql-exporter
