@@ -119,7 +119,6 @@ services:
       - NEXTCLOUD_USERNAME=${NEXTCLOUD_USERNAME}
       - NEXTCLOUD_PASSWORD=${NEXTCLOUD_PASSWORD}
       - NEXTCLOUD_TLS_SKIP_VERIFY=true
-      - NEXTCLOUD_LISTEN_ADDRESS=":80"
   mysql-exporter:
     image: prom/mysqld-exporter
     container_name: mysql-exporter
