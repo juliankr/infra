@@ -2,7 +2,7 @@
 #Set the language
 set -e
 export LANG="en_US.UTF-8"
-. ../.env
+. $(dirname "$0")/../.env
 
 
 curl -X POST --insecure -H "Content-Type: application/json" -d \
