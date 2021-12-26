@@ -13,7 +13,7 @@ runBackup() {
 }
 
 (
-  set -ex
+  set -e
   export LANG="en_US.UTF-8"
   . $(dirname "$0")/../.env
   SOURCE=$1
