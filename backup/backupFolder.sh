@@ -14,6 +14,8 @@ runBackup() {
 
 (
   set -ex
+  export LANG="en_US.UTF-8"
+  . $(dirname "$0")/../.env
   SOURCE=$1
   TARGET=$2
   runBackup "$SOURCE" "$TARGET"
