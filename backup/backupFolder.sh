@@ -1,5 +1,5 @@
 #!/bin/sh
-set -x
+set -e
 runBackup() {
   SOURCE=$1
   TARGET=$2
