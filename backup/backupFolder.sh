@@ -4,11 +4,11 @@ runBackup() {
   SOURCE=$1
   TARGET=$2
   curl -X POST --insecure -H "Content-Type: application/json" -d \
-    '{"message": "Starting sync of data $SOURCE to $TARGET", "number": "'"$SIGNAL_SOURCE_NUMBER"'", "recipients": ["'"$SIGNAL_TARGET_NUMBER"'"]}' \
+    '{"message": "Starting sync of data '"$SOURCE"' to '"$TARGET"'", "number": "'"$SIGNAL_SOURCE_NUMBER"'", "recipients": ["'"$SIGNAL_TARGET_NUMBER"'"]}' \
   'https://signal.home/v2/send'
-  rsync -a "$SOURCE" "$TARGET"
+  rsync -a --info=progress2 "$SOURCE" "$TARGET"
   curl -X POST --insecure -H "Content-Type: application/json" -d \
-    '{"message": "Finished sync of docker data $SOURCE to $TARGET", "number": "'"$SIGNAL_SOURCE_NUMBER"'", "recipients": ["'"$SIGNAL_TARGET_NUMBER"'"]}' \
+    '{"message": "Finished sync of docker data '"$SOURCE"' to '"$TARGET"'", "number": "'"$SIGNAL_SOURCE_NUMBER"'", "recipients": ["'"$SIGNAL_TARGET_NUMBER"'"]}' \
   'https://signal.home/v2/send'
 }
 
@@ -23,6 +23,6 @@ runBackup() {
 
 if [ $? -ne 0 ]; then
   curl -X POST --insecure -H "Content-Type: application/json" -d \
-    '{"message": "Failure during docker sync  $SOURCE to $TARGET", "number": "'"$SIGNAL_SOURCE_NUMBER"'", "recipients": ["'"$SIGNAL_TARGET_NUMBER"'"]}' \
+    '{"message": "Failure during docker sync  '"$SOURCE"' to '"$TARGET"'", "number": "'"$SIGNAL_SOURCE_NUMBER"'", "recipients": ["'"$SIGNAL_TARGET_NUMBER"'"]}' \
   'https://signal.home/v2/send'
 fi
