@@ -40,7 +40,7 @@ services:
   signal-cli-rest-api:
     container_name: signal-cli-rest-api
     restart: 'always'
-    image: bbernhard/signal-cli-rest-api:latest
+    image: bbernhard/signal-cli-rest-api:0.65
     environment:
       - MODE=normal #supported modes: json-rpc, native, normal
       #- AUTO_RECEIVE_SCHEDULE=0 22 * * * #enable this parameter on demand (see description below)
@@ -136,9 +136,9 @@ services:
       - "443:443"
     volumes:
       - ./caddy:/etc/caddy
-      - /home/julian/docker/site:/srv
-      - /home/julian/docker/caddy_data:/data
-      - /home/julian/docker/caddy_config:/config
+      - ./site:/srv
+      - ./caddy_data:/data
+      - ./caddy_config:/config
   fritz-exporter:
     # https://github.com/pdreker/fritz_exporter/issues/62
     image: pdreker/fritz_exporter:latest
