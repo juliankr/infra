@@ -1,7 +1,7 @@
 version: "3"
 services:
   nextcloud:
-    image: nextcloud:22.2.2
+    image: nextcloud:27.1.5
     container_name: nextcloud
     environment:
       - TZ=Europe/Berlin
@@ -128,7 +128,7 @@ services:
     environment:
       - DATA_SOURCE_NAME=${DATA_SOURCE_NAME}
   caddy:
-    image: caddy:2.4.6-alpine
+    image: caddy:2.7.6-alpine
     container_name: caddy
     restart: unless-stopped
     ports:
