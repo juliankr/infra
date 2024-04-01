@@ -11,3 +11,5 @@ docker/caddy_config/
 .env
 atMessages/
 tmp.*
+letsencrypt/
+docker/nginx_data
