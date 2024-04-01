@@ -24,5 +24,3 @@ sudo apt install network-manager
 # install certbot to create certificates
 sudo snap install --classic certbot
 
-# create Cert
-certbot certonly --server https://acme-v02.api.letsencrypt.org/directory -d "$WILDCARD_DOMAIN" --email "$MY_MAIL" --preferred-challenges dns --manual --config-dir ./letsencrypt --work-dir ./letsencrypt --logs-dir ./letsencrypt

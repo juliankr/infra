@@ -8,3 +8,9 @@ The rest around this project is just for fun.
 
 ## Overview
 ![infra](infra.drawio.svg)
+
+
+## Create certificates
+```
+certbot certonly --server https://acme-v02.api.letsencrypt.org/directory -d "*.${WILDCARD_DOMAIN}" --email "$MY_MAIL" --preferred-challenges dns --manual --config-dir ./letsencrypt --work-dir ./letsencrypt --logs-dir ./letsencrypt
+```
