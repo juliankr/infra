@@ -27,3 +27,6 @@ sudo snap install --classic certbot
 # install strato-certbot
 git clone git@github.com:Buxdehuda/strato-certbot.git
 
+mkdir nginx_data/cache
+mkdir nginx_data/run
+mkdir nginx_data/tmp

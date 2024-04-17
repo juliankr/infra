@@ -151,6 +151,8 @@ services:
     expose:
       - 9787
   nginx:
+    ports:
+      - "8080:8080"
     image: nginxinc/nginx-unprivileged:1.23.4
     container_name: nginx
     restart: always
