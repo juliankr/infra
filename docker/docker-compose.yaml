@@ -160,4 +160,4 @@ services:
     - ./nginx_data/run:/var/run
     - ./nginx_data/tmp:/tmp
     - ../letsencrypt/live/${WILDCARD_DOMAIN}:/var/letsencrypt/live/domain
-    - ../letsencrypt/archive/${WILDCARD_DOMAIN}:/var/letsencrypt/archive/domain
+    - ../letsencrypt/archive/${WILDCARD_DOMAIN}:/var/letsencrypt/archive/${WILDCARD_DOMAIN}
