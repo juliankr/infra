@@ -15,7 +15,7 @@ echo '{
   "waiting_time": 60
 }' > strato-auth.json
 
-# $(dirname "$0")/strato-certbot/auth-hook.py
+$(dirname "$0")/strato-certbot/auth-hook.py "$@"
 
 rm strato-auth.json
 
