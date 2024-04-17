@@ -159,5 +159,5 @@ services:
     - ./nginx_data/cache:/var/cache/nginx
     - ./nginx_data/run:/var/run
     - ./nginx_data/tmp:/tmp
-    - ../letsencrypt/live/${WILDCARD_DOMAIN}:/var/letsencrypt/live/domain
-    - ../letsencrypt/archive/${WILDCARD_DOMAIN}:/var/letsencrypt/archive/${WILDCARD_DOMAIN}
+    - ./letsencrypt/live/${WILDCARD_DOMAIN}:/var/letsencrypt/live/domain
+    - ./letsencrypt/archive/${WILDCARD_DOMAIN}:/var/letsencrypt/archive/${WILDCARD_DOMAIN}
