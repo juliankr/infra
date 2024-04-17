@@ -24,3 +24,6 @@ sudo apt install network-manager
 # install certbot to create certificates
 sudo snap install --classic certbot
 
+# install strato-certbot
+git clone git@github.com:Buxdehuda/strato-certbot.git
+
