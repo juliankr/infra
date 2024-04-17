@@ -12,5 +12,4 @@ The rest around this project is just for fun.
 
 ## Create certificates
 ```
-certbot certonly --server https://acme-v02.api.letsencrypt.org/directory -d "*.${WILDCARD_DOMAIN}" --email "$MY_MAIL" --preferred-challenges dns --manual --config-dir $(pwd)/letsencrypt --work-dir $(pwd)/letsencrypt --logs-dir $(pwd)/letsencrypt --manual-auth-hook $(pwd)/certbotWrapper.sh --manual-cleanup-hook $(pwd)/strato-certbot/cleanup-hook.py
-```
+certbot certonly --server https://acme-v02.api.letsencrypt.org/directory -d "*.${WILDCARD_DOMAIN}" --email "$MY_MAIL" --preferred-challenges dns --manual --config-dir $(pwd)/letsencrypt --work-dir $(pwd)/letsencrypt --logs-dir $(pwd)/letsencrypt --manual-auth-hook $(pwd)/certbotWrapperRenew.sh --manual-cleanup-hook $(pwd)/certbotWrapperClean.sh
