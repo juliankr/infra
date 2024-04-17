@@ -13,7 +13,7 @@ echo '{
   "username": "'$STRATO_USER'",
   "password": "'$STRATO_PASSWORD'",
   "waiting_time": 60
-}' > strato-auth.json
+}' > $(dirname "$0")/strato-certbot/strato-auth.json
 
 $(dirname "$0")/strato-certbot/auth-hook.py "$@"
 
