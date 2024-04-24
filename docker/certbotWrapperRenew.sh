@@ -5,7 +5,7 @@ export LANG="en_US.UTF-8"
 
 curl -X POST --insecure -H "Content-Type: application/json" -d \
   '{"message": "Start '"$TIMESTAMP"' setup strato for new cert", "number": "'"$SIGNAL_SOURCE_NUMBER"'", "recipients": ["'"$SIGNAL_TARGET_NUMBER"'"]}' \
-  'https://signal.home/v2/send'
+  "https://signal.${WILDCARD_DOMAIN}/v2/send"
 
 
 echo '{

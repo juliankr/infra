@@ -127,17 +127,6 @@ services:
       - 9104
     environment:
       - DATA_SOURCE_NAME=${DATA_SOURCE_NAME}
-  caddy:
-    image: caddy:2.7.6-alpine
-    container_name: caddy
-    restart: unless-stopped
-    ports:
-      - "80:80"
-    volumes:
-      - ./caddy:/etc/caddy
-      - ./site:/srv
-      - ./caddy_data:/data
-      - ./caddy_config:/config
   fritz-exporter:
     # https://github.com/pdreker/fritz_exporter/issues/62
     image: pdreker/fritz_exporter:latest
