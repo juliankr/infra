@@ -7,7 +7,7 @@ export LANG="en_US.UTF-8"
 
 curl -X POST --insecure -H "Content-Type: application/json" -d \
   '{"message": "Start '"$TIMESTAMP"' Backup for Databases", "number": "'"$SIGNAL_SOURCE_NUMBER"'", "recipients": ["'"$SIGNAL_TARGET_NUMBER"'"]}' \
-  'https://signal.home/v2/send'
+  "https://signal.${WILDCARD_DOMAIN}/v2/send"
 
 
 
@@ -27,5 +27,5 @@ docker exec -e MYSQL_DATABASE=$MYSQL_DATABASE  \
 
 curl -X POST --insecure -H "Content-Type: application/json" -d \
   '{"message": "Finished Backup for Databases", "number": "'"$SIGNAL_SOURCE_NUMBER"'", "recipients": ["'"$SIGNAL_TARGET_NUMBER"'"]}' \
-  'https://signal.home/v2/send'
+  "https://signal.${WILDCARD_DOMAIN}/v2/send"
 
