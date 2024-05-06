@@ -144,6 +144,8 @@ services:
     image: nginxinc/nginx-unprivileged:1.23.4
     container_name: nginx
     restart: always
+    links:
+      - fluentd
     user: "1000:1000"
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
@@ -160,6 +162,7 @@ services:
 
   fluentd:
     build: ../fluentd
+    restart: always
     container_name: fluentd
     volumes:
       - ../fluentd/conf:/fluentd/etc
@@ -170,18 +173,24 @@ services:
       - "24224:24224/udp"
 
   elasticsearch:
-    image: elasticsearch:8.13.0
+    image: elasticsearch:7.17.21
     container_name: elasticsearch
+    restart: always
     environment:
       - "discovery.type=single-node"
+      - "xpack.security.enabled=false"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     expose:
       - "9200"
     ports:
       - "9200:9200"
 
   kibana:
+    restart: always
     container_name: kibana
-    image: docker.elastic.co/kibana/kibana:8.13.0
+    image: docker.elastic.co/kibana/kibana:7.17.21
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
     links:
       - "elasticsearch"
     expose:
