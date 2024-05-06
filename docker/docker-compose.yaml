@@ -155,11 +155,12 @@ services:
     logging:
       driver: "fluentd"
       options:
-        fluentd-address: fluentd:24224
+        fluentd-address: localhost:24224
         tag: httpd.access
 
   fluentd:
     build: ../fluentd
+    container_name: fluentd
     volumes:
       - ../fluentd/conf:/fluentd/etc
     links:
@@ -179,6 +180,7 @@ services:
       - "9200:9200"
 
   kibana:
+    container_name: kibana
     image: docker.elastic.co/kibana/kibana:8.13.0
     links:
       - "elasticsearch"
