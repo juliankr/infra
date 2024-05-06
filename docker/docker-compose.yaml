@@ -152,3 +152,35 @@ services:
       - ./nginx_data/tmp:/tmp
       - ./letsencrypt/archive/:/var/letsencrypt/archive/
       - ./letsencrypt/live/${WILDCARD_DOMAIN}:/var/letsencrypt/live/domain
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: fluentd:24224
+        tag: httpd.access
+
+  fluentd:
+    build: ../fluentd
+    volumes:
+      - ../fluentd/conf:/fluentd/etc
+    links:
+      - "elasticsearch"
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+
+  elasticsearch:
+    image:elasticsearch:8.13.0
+    container_name: elasticsearch
+    environment:
+      - "discovery.type=single-node"
+    expose:
+      - "9200"
+    ports:
+      - "9200:9200"
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.13.0
+    links:
+      - "elasticsearch"
+    expose:
+      - "5601"

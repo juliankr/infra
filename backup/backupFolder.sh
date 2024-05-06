@@ -8,7 +8,7 @@ runBackup() {
   "https://signal.${WILDCARD_DOMAIN}/v2/send"
   rsync -a --info=progress2 "$SOURCE" "$TARGET"
   curl -X POST --insecure -H "Content-Type: application/json" -d \
-    '{"message": "Finished sync of docker data '"$SOURCE"' to '"$TARGET"'", "number": "'"$SIGNAL_SOURCE_NUMBER"'", "recipients": ["'"$SIGNAL_TARGET_NUMBER"'"]}' \
+    '{"message": "Finished sync of data '"$SOURCE"' to '"$TARGET"'", "number": "'"$SIGNAL_SOURCE_NUMBER"'", "recipients": ["'"$SIGNAL_TARGET_NUMBER"'"]}' \
   "https://signal.${WILDCARD_DOMAIN}/v2/send"
 }
 
