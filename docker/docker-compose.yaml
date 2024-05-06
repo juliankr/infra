@@ -169,7 +169,7 @@ services:
       - "24224:24224/udp"
 
   elasticsearch:
-    image:elasticsearch:8.13.0
+    image: elasticsearch:8.13.0
     container_name: elasticsearch
     environment:
       - "discovery.type=single-node"
