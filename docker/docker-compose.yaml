@@ -278,6 +278,8 @@ services:
       - "9200"
     ports:
       - "9200:9200"
+    volumes:
+      - ./elasticsearch_data:/usr/share/elasticsearch/data:rw
     logging:
       driver: "fluentd"
       options:
