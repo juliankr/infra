@@ -17,29 +17,55 @@ services:
     expose:
       - 80
     restart: always
+    links:
+      - fluentd
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: nextcloud
+
   mariadb:
     expose:
       - 3306
     container_name: mariadb
     image: "mariadb:10.7.1"
     restart: 'always'
+    links:
+      - fluentd
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW --innodb-file-per-table=1 --skip-innodb-read-only-compressed
     volumes:
       - ${MARIADB_DATA}:/var/lib/mysql/
       - ./mariadbconf:/var/docker/mariadb/conf
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: mariadb
+
   phpmyadmin:
     container_name: phpmyadmin
     image: phpmyadmin/phpmyadmin:latest
+    restart: always
+    links:
+      - mariadb
+      - fluentd
     expose:
       - 80
     environment:
       - PMA_ARBITRARY=1
       - PMA_HOST=mariadb
-    depends_on:
-      - mariadb
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: phpmyadmin
+
   signal-cli-rest-api:
     container_name: signal-cli-rest-api
     restart: 'always'
+    links:
+      - fluentd
     image: bbernhard/signal-cli-rest-api:0.83
     environment:
       - MODE=normal #supported modes: json-rpc, native, normal
@@ -48,11 +74,18 @@ services:
       - 8080 #map docker port 8080 to host port 8080.
     volumes:
       - "${SIGNAL_DATA}:/home/.local/share/signal-cli"
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: signal-cli-rest-api
 
   prometheus:
     container_name: prometheus
     image: prom/prometheus:v2.31.1
     restart: 'always'
+    links:
+      - fluentd
     expose:
       - 9090
     volumes:
@@ -61,21 +94,36 @@ services:
     command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml --storage.tsdb.retention.time=185d
     extra_hosts:
       - "host.docker.internal:host-gateway"
-
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: prometheus
+  
   grafana:
     container_name: grafana
     image: grafana/grafana:7.5.7
     restart: 'always'
+    links:
+      - fluentd
     expose:
       - 3000
     volumes:
       - ./grafana-datasources:/etc/grafana/provisioning/datasources
       - ${GRAFANA_DATA}:/var/lib/grafana
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: grafana
+  
   node-exporter:
   # https://grafana.com/docs/grafana-cloud/quickstart/docker-compose-linux/
     image: prom/node-exporter:latest
     container_name: node-exporter
     restart: always
+    links:
+      - fluentd
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
@@ -87,10 +135,18 @@ services:
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
     expose:
       - 9100
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: node-exporter
+
   cadvisor:
     image: google/cadvisor:latest
     container_name: cadvisor
     restart: always
+    links:
+      - fluentd
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:rw
@@ -98,20 +154,36 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
     expose:
       - 8080
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: cadvisor    
+
   signal-webhook:
     image: signal-webhook
     container_name: signal-webhook
     restart: always
+    links:
+      - fluentd
     expose:
       - 8080
     environment:
       - SIGNAL_CLI_REST_API_BASE_URL=http://signal-cli-rest-api:8080
       - SOURCE_NUMBER=${SIGNAL_SOURCE_NUMBER}
       - TARGET_NUMBER=${SIGNAL_TARGET_NUMBER}
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: signal-webhook
+
   nextcloud-exporter:
     image: xperimental/nextcloud-exporter
     container_name: nextcloud-exporter
     restart: always
+    links:
+      - fluentd
     expose:
       - 9205
     environment:
@@ -119,25 +191,47 @@ services:
       - NEXTCLOUD_USERNAME=${NEXTCLOUD_USERNAME}
       - NEXTCLOUD_PASSWORD=${NEXTCLOUD_PASSWORD}
       - NEXTCLOUD_TLS_SKIP_VERIFY=true
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: nextcloud-exporter
+  
   mysql-exporter:
     image: prom/mysqld-exporter
     container_name: mysql-exporter
     restart: always
+    links:
+      - fluentd
     expose:
       - 9104
     environment:
       - DATA_SOURCE_NAME=${DATA_SOURCE_NAME}
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: mysql-exporter
+
   fritz-exporter:
     # https://github.com/pdreker/fritz_exporter/issues/62
     image: pdreker/fritz_exporter:latest
     container_name: fritz-exporter
     restart: always
+    links:
+      - fluentd
     environment:
       # - FRITZ_HOSTNAME='fritz.box'
       - FRITZ_USERNAME=${FRITZBOX_USERNAME}
       - FRITZ_PASSWORD=${FRITZBOX_PASSWORD}
     expose:
       - 9787
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: fritz-exporter
+  
   nginx:
     ports:
       - "443:443"
@@ -158,7 +252,7 @@ services:
       driver: "fluentd"
       options:
         fluentd-address: localhost:24224
-        tag: httpd.access
+        tag: nginx
 
   fluentd:
     build: ../fluentd
@@ -166,8 +260,6 @@ services:
     container_name: fluentd
     volumes:
       - ../fluentd/conf:/fluentd/etc
-    links:
-      - "elasticsearch"
     ports:
       - "24224:24224"
       - "24224:24224/udp"
@@ -176,6 +268,8 @@ services:
     image: elasticsearch:7.17.21
     container_name: elasticsearch
     restart: always
+    links:
+      - fluentd
     environment:
       - "discovery.type=single-node"
       - "xpack.security.enabled=false"
@@ -184,14 +278,25 @@ services:
       - "9200"
     ports:
       - "9200:9200"
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: elasticsearch
 
   kibana:
     restart: always
+    links:
+      - fluentd
+      - elasticsearch
     container_name: kibana
     image: docker.elastic.co/kibana/kibana:7.17.21
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-    links:
-      - "elasticsearch"
     expose:
       - "5601"
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: kibana
