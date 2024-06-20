@@ -22,7 +22,7 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100/loki/api/v1/push
+        loki-url: http://127.0.0.1/loki/api/v1/push
 
   mariadb:
     expose:
@@ -39,7 +39,7 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100/loki/api/v1/push
+        loki-url: http://127.0.0.1/loki/api/v1/push
 
   phpmyadmin:
     container_name: phpmyadmin
@@ -56,7 +56,7 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100/loki/api/v1/push
+        loki-url: http://127.0.0.1/loki/api/v1/push
 
   signal-cli-rest-api:
     container_name: signal-cli-rest-api
@@ -74,7 +74,7 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100/loki/api/v1/push
+        loki-url: http://127.0.0.1/loki/api/v1/push
 
   prometheus:
     container_name: prometheus
@@ -93,7 +93,7 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100/loki/api/v1/push
+        loki-url: http://127.0.0.1/loki/api/v1/push
   
   grafana:
     container_name: grafana
@@ -109,7 +109,7 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100/loki/api/v1/push
+        loki-url: http://127.0.0.1/loki/api/v1/push
   
   node-exporter:
   # https://grafana.com/docs/grafana-cloud/quickstart/docker-compose-linux/
@@ -132,7 +132,7 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100/loki/api/v1/push
+        loki-url: http://127.0.0.1/loki/api/v1/push
 
   cadvisor:
     image: google/cadvisor:latest
@@ -150,7 +150,7 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100/loki/api/v1/push
+        loki-url: http://127.0.0.1/loki/api/v1/push
 
   signal-webhook:
     image: signal-webhook
@@ -167,7 +167,7 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100/loki/api/v1/push
+        loki-url: http://127.0.0.1/loki/api/v1/push
 
   nextcloud-exporter:
     image: xperimental/nextcloud-exporter
@@ -185,7 +185,7 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100/loki/api/v1/push
+        loki-url: http://127.0.0.1/loki/api/v1/push
   
   mysql-exporter:
     image: prom/mysqld-exporter
@@ -239,7 +239,7 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100/loki/api/v1/push
+        loki-url: http://127.0.0.1/loki/api/v1/push
   
   loki:
     image: grafana/loki:2.9.2
