@@ -22,8 +22,8 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100/loki/api/v1/push
-       
+        loki-url: localhost:3100
+
   mariadb:
     expose:
       - 3306
@@ -39,8 +39,8 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100/loki/api/v1/push
-       
+        loki-url: localhost:3100
+
   phpmyadmin:
     container_name: phpmyadmin
     image: phpmyadmin/phpmyadmin:latest
@@ -56,8 +56,8 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100/loki/api/v1/push
-       
+        loki-url: localhost:3100
+
   signal-cli-rest-api:
     container_name: signal-cli-rest-api
     restart: 'always'
@@ -74,8 +74,8 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100/loki/api/v1/push
-       
+        loki-url: localhost:3100
+
   prometheus:
     container_name: prometheus
     image: prom/prometheus:v2.31.1
@@ -93,8 +93,8 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100/loki/api/v1/push
-         
+        loki-url: localhost:3100
+  
   grafana:
     container_name: grafana
     image: grafana/grafana:7.5.7
@@ -109,8 +109,8 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100/loki/api/v1/push
-         
+        loki-url: localhost:3100
+  
   node-exporter:
   # https://grafana.com/docs/grafana-cloud/quickstart/docker-compose-linux/
     image: prom/node-exporter:latest
@@ -132,8 +132,8 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100/loki/api/v1/push
-       
+        loki-url: localhost:3100
+
   cadvisor:
     image: google/cadvisor:latest
     container_name: cadvisor
@@ -150,8 +150,8 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100/loki/api/v1/push
-       
+        loki-url: localhost:3100
+
   signal-webhook:
     image: signal-webhook
     container_name: signal-webhook
@@ -167,8 +167,8 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100/loki/api/v1/push
-       
+        loki-url: localhost:3100
+
   nextcloud-exporter:
     image: xperimental/nextcloud-exporter
     container_name: nextcloud-exporter
@@ -185,8 +185,8 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100/loki/api/v1/push
-         
+        loki-url: localhost:3100
+  
   mysql-exporter:
     image: prom/mysqld-exporter
     container_name: mysql-exporter
@@ -200,8 +200,8 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100/loki/api/v1/push
-       
+        loki-url: localhost:3100
+
   fritz-exporter:
     # https://github.com/pdreker/fritz_exporter/issues/62
     image: pdreker/fritz_exporter:latest
@@ -218,8 +218,8 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100/loki/api/v1/push
-         
+        loki-url: localhost:3100
+  
   nginx:
     ports:
       - "443:443"
@@ -239,11 +239,11 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100/loki/api/v1/push
-       
+        loki-url: localhost:3100
   
   loki:
     image: grafana/loki:2.9.2
+    container_name: loki
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
