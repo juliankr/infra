@@ -22,9 +22,8 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100
-        tag: nextcloud
-
+        loki-url: localhost:3100/loki/api/v1/push
+       
   mariadb:
     expose:
       - 3306
@@ -40,9 +39,8 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100
-        tag: mariadb
-
+        loki-url: localhost:3100/loki/api/v1/push
+       
   phpmyadmin:
     container_name: phpmyadmin
     image: phpmyadmin/phpmyadmin:latest
@@ -58,9 +56,8 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100
-        tag: phpmyadmin
-
+        loki-url: localhost:3100/loki/api/v1/push
+       
   signal-cli-rest-api:
     container_name: signal-cli-rest-api
     restart: 'always'
@@ -77,9 +74,8 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100
-        tag: signal-cli-rest-api
-
+        loki-url: localhost:3100/loki/api/v1/push
+       
   prometheus:
     container_name: prometheus
     image: prom/prometheus:v2.31.1
@@ -97,9 +93,8 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100
-        tag: prometheus
-  
+        loki-url: localhost:3100/loki/api/v1/push
+         
   grafana:
     container_name: grafana
     image: grafana/grafana:7.5.7
@@ -114,9 +109,8 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100
-        tag: grafana
-  
+        loki-url: localhost:3100/loki/api/v1/push
+         
   node-exporter:
   # https://grafana.com/docs/grafana-cloud/quickstart/docker-compose-linux/
     image: prom/node-exporter:latest
@@ -138,9 +132,8 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100
-        tag: node-exporter
-
+        loki-url: localhost:3100/loki/api/v1/push
+       
   cadvisor:
     image: google/cadvisor:latest
     container_name: cadvisor
@@ -157,9 +150,8 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100
-        tag: cadvisor    
-
+        loki-url: localhost:3100/loki/api/v1/push
+       
   signal-webhook:
     image: signal-webhook
     container_name: signal-webhook
@@ -175,9 +167,8 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100
-        tag: signal-webhook
-
+        loki-url: localhost:3100/loki/api/v1/push
+       
   nextcloud-exporter:
     image: xperimental/nextcloud-exporter
     container_name: nextcloud-exporter
@@ -194,9 +185,8 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100
-        tag: nextcloud-exporter
-  
+        loki-url: localhost:3100/loki/api/v1/push
+         
   mysql-exporter:
     image: prom/mysqld-exporter
     container_name: mysql-exporter
@@ -210,9 +200,8 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100
-        tag: mysql-exporter
-
+        loki-url: localhost:3100/loki/api/v1/push
+       
   fritz-exporter:
     # https://github.com/pdreker/fritz_exporter/issues/62
     image: pdreker/fritz_exporter:latest
@@ -229,9 +218,8 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100
-        tag: fritz-exporter
-  
+        loki-url: localhost:3100/loki/api/v1/push
+         
   nginx:
     ports:
       - "443:443"
@@ -251,9 +239,8 @@ services:
     logging:
       driver: "loki"
       options:
-        loki-url: localhost:3100
-        tag: nginx
-
+        loki-url: localhost:3100/loki/api/v1/push
+       
   
   loki:
     image: grafana/loki:2.9.2

@@ -34,3 +34,6 @@ pip install -r strato-certbot/requirements.txt
 mkdir nginx_data/cache
 mkdir nginx_data/run
 mkdir nginx_data/tmp
+
+# install loki docker driver
+docker plugin install grafana/loki-docker-driver:2.9.2 --alias loki --grant-all-permissions
