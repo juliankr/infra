@@ -14,3 +14,4 @@ tmp.*
 letsencrypt/
 docker/nginx_data
 strato-certbot/
+kubernetes/cert/

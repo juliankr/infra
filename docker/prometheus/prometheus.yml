@@ -34,3 +34,7 @@ scrape_configs:
   static_configs:
   - targets:
     - "fritz-exporter:9787"
+- job_name: 'loki'
+  static_configs:
+  - targets:
+    - "loki:3100"

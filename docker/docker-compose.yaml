@@ -20,9 +20,9 @@ services:
     links:
       - fluentd
     logging:
-      driver: "fluentd"
+      driver: "loki"
       options:
-        fluentd-address: localhost:24224
+        loki-url: localhost:3100
         tag: nextcloud
 
   mariadb:
@@ -38,9 +38,9 @@ services:
       - ${MARIADB_DATA}:/var/lib/mysql/
       - ./mariadbconf:/var/docker/mariadb/conf
     logging:
-      driver: "fluentd"
+      driver: "loki"
       options:
-        fluentd-address: localhost:24224
+        loki-url: localhost:3100
         tag: mariadb
 
   phpmyadmin:
@@ -56,9 +56,9 @@ services:
       - PMA_ARBITRARY=1
       - PMA_HOST=mariadb
     logging:
-      driver: "fluentd"
+      driver: "loki"
       options:
-        fluentd-address: localhost:24224
+        loki-url: localhost:3100
         tag: phpmyadmin
 
   signal-cli-rest-api:
@@ -75,9 +75,9 @@ services:
     volumes:
       - "${SIGNAL_DATA}:/home/.local/share/signal-cli"
     logging:
-      driver: "fluentd"
+      driver: "loki"
       options:
-        fluentd-address: localhost:24224
+        loki-url: localhost:3100
         tag: signal-cli-rest-api
 
   prometheus:
@@ -95,9 +95,9 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     logging:
-      driver: "fluentd"
+      driver: "loki"
       options:
-        fluentd-address: localhost:24224
+        loki-url: localhost:3100
         tag: prometheus
   
   grafana:
@@ -112,9 +112,9 @@ services:
       - ./grafana-datasources:/etc/grafana/provisioning/datasources
       - ${GRAFANA_DATA}:/var/lib/grafana
     logging:
-      driver: "fluentd"
+      driver: "loki"
       options:
-        fluentd-address: localhost:24224
+        loki-url: localhost:3100
         tag: grafana
   
   node-exporter:
@@ -136,9 +136,9 @@ services:
     expose:
       - 9100
     logging:
-      driver: "fluentd"
+      driver: "loki"
       options:
-        fluentd-address: localhost:24224
+        loki-url: localhost:3100
         tag: node-exporter
 
   cadvisor:
@@ -155,9 +155,9 @@ services:
     expose:
       - 8080
     logging:
-      driver: "fluentd"
+      driver: "loki"
       options:
-        fluentd-address: localhost:24224
+        loki-url: localhost:3100
         tag: cadvisor    
 
   signal-webhook:
@@ -173,9 +173,9 @@ services:
       - SOURCE_NUMBER=${SIGNAL_SOURCE_NUMBER}
       - TARGET_NUMBER=${SIGNAL_TARGET_NUMBER}
     logging:
-      driver: "fluentd"
+      driver: "loki"
       options:
-        fluentd-address: localhost:24224
+        loki-url: localhost:3100
         tag: signal-webhook
 
   nextcloud-exporter:
@@ -192,9 +192,9 @@ services:
       - NEXTCLOUD_PASSWORD=${NEXTCLOUD_PASSWORD}
       - NEXTCLOUD_TLS_SKIP_VERIFY=true
     logging:
-      driver: "fluentd"
+      driver: "loki"
       options:
-        fluentd-address: localhost:24224
+        loki-url: localhost:3100
         tag: nextcloud-exporter
   
   mysql-exporter:
@@ -208,9 +208,9 @@ services:
     environment:
       - DATA_SOURCE_NAME=${DATA_SOURCE_NAME}
     logging:
-      driver: "fluentd"
+      driver: "loki"
       options:
-        fluentd-address: localhost:24224
+        loki-url: localhost:3100
         tag: mysql-exporter
 
   fritz-exporter:
@@ -227,9 +227,9 @@ services:
     expose:
       - 9787
     logging:
-      driver: "fluentd"
+      driver: "loki"
       options:
-        fluentd-address: localhost:24224
+        loki-url: localhost:3100
         tag: fritz-exporter
   
   nginx:
@@ -244,61 +244,19 @@ services:
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./nginx_data/cache:/var/cache/nginx
-      - ./nginx_data/run:/var/run
       - ./nginx_data/tmp:/tmp
+      - ./nginx_data/run:/var/run
       - ./letsencrypt/archive/:/var/letsencrypt/archive/
       - ./letsencrypt/live/${WILDCARD_DOMAIN}:/var/letsencrypt/live/domain
     logging:
-      driver: "fluentd"
+      driver: "loki"
       options:
-        fluentd-address: localhost:24224
+        loki-url: localhost:3100
         tag: nginx
 
-  fluentd:
-    build: ../fluentd
-    restart: always
-    container_name: fluentd
-    volumes:
-      - ../fluentd/conf:/fluentd/etc
+  
+  loki:
+    image: grafana/loki:2.9.2
     ports:
-      - "24224:24224"
-      - "24224:24224/udp"
-
-  elasticsearch:
-    image: elasticsearch:7.17.21
-    container_name: elasticsearch
-    restart: always
-    links:
-      - fluentd
-    environment:
-      - "discovery.type=single-node"
-      - "xpack.security.enabled=false"
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    expose:
-      - "9200"
-    ports:
-      - "9200:9200"
-    volumes:
-      - ./elasticsearch_data:/usr/share/elasticsearch/data:rw
-    logging:
-      driver: "fluentd"
-      options:
-        fluentd-address: localhost:24224
-        tag: elasticsearch
-
-  kibana:
-    restart: always
-    links:
-      - fluentd
-      - elasticsearch
-    container_name: kibana
-    image: docker.elastic.co/kibana/kibana:7.17.21
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-    expose:
-      - "5601"
-    logging:
-      driver: "fluentd"
-      options:
-        fluentd-address: localhost:24224
-        tag: kibana
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
