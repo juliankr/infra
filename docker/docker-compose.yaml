@@ -188,8 +188,9 @@ services:
         loki-url: http://127.0.0.1:3100/loki/api/v1/push
         loki-pipeline-stages: |
           - logfmt:
-              level: level
-              msg: message
+              mapping:
+                level: level
+                msg: message
           - labels:
               level:
               message:
