@@ -252,6 +252,7 @@ services:
                 http_referer: http_referer
                 http_user_agent: http_user_agent
                 request_time: request_time
+        labels: time_local, remote_addr, remote_user, request, status, body_bytes_sent, http_referer, http_user_agent, request_time
   
   loki:
     image: grafana/loki:2.9.2
