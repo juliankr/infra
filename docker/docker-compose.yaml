@@ -75,6 +75,16 @@ services:
       driver: "loki"
       options:
         loki-url: http://127.0.0.1:3100/loki/api/v1/push
+        loki-pipeline-stages: |
+          - logfmt:
+              mapping:
+                level: level
+                msg: message
+                time: @timestamp
+          - labels:
+              level:
+              message:
+              @timestamp:
 
   prometheus:
     container_name: prometheus
@@ -133,6 +143,20 @@ services:
       driver: "loki"
       options:
         loki-url: http://127.0.0.1:3100/loki/api/v1/push
+        loki-pipeline-stages: |
+          - logfmt:
+              mapping:
+                level: level
+                collector: collector
+                msg: message
+                ts: @timestamp
+          - labels:
+              level:
+              message:
+              collector:
+              @timestamp:
+
+        # caller=filesystem_common.go:113 level=info collector=filesystem msg="Parsed flag --collector.filesystem.fs-types-exclude" flag=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$
 
   cadvisor:
     image: google/cadvisor:latest
@@ -209,6 +233,20 @@ services:
       driver: "loki"
       options:
         loki-url: http://127.0.0.1:3100/loki/api/v1/push
+        loki-pipeline-stages: |
+          - logfmt:
+              mapping:
+                level: level
+                ts: @timestamp
+                msg: message
+                scraper: scraper
+                caller: caller
+          - labels:
+              level:
+              message:
+              scraper:
+              caller:
+              @timestamp:
 
   fritz-exporter:
     # https://github.com/pdreker/fritz_exporter/issues/62
