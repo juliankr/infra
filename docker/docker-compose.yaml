@@ -80,11 +80,11 @@ services:
               mapping:
                 level: level
                 msg: message
-                time: @timestamp
+                time: time
           - labels:
               level:
               message:
-              @timestamp:
+              time:
 
   prometheus:
     container_name: prometheus
@@ -104,7 +104,29 @@ services:
       driver: "loki"
       options:
         loki-url: http://127.0.0.1:3100/loki/api/v1/push
-  
+        loki-pipeline-stages: |
+          - logfmt:
+              mapping:
+                level: level
+                ts: time
+                msg: message
+                caller: caller
+                component: component
+                mint: mint
+                maxt: maxt
+                ulid: ulid
+                duration: duration
+          - labels:
+              level:
+              message:
+              caller:
+              time:
+              component:
+              mint:
+              maxt:
+              ulid:
+              duration:
+
   grafana:
     container_name: grafana
     image: grafana/grafana:7.5.7
@@ -120,6 +142,20 @@ services:
       driver: "loki"
       options:
         loki-url: http://127.0.0.1:3100/loki/api/v1/push
+        loki-pipeline-stages: |
+          - json:
+              expressions:
+                "@level": level
+                "@message": message
+                caller: caller
+                "@timestamp": time
+                queryType: queryType
+          - labels:
+              level:
+              message:
+              caller:
+              time:
+              queryType:
   
   node-exporter:
   # https://grafana.com/docs/grafana-cloud/quickstart/docker-compose-linux/
@@ -149,14 +185,12 @@ services:
                 level: level
                 collector: collector
                 msg: message
-                ts: @timestamp
+                ts: time
           - labels:
               level:
               message:
               collector:
-              @timestamp:
-
-        # caller=filesystem_common.go:113 level=info collector=filesystem msg="Parsed flag --collector.filesystem.fs-types-exclude" flag=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$
+              time:
 
   cadvisor:
     image: google/cadvisor:latest
@@ -237,7 +271,7 @@ services:
           - logfmt:
               mapping:
                 level: level
-                ts: @timestamp
+                ts: time
                 msg: message
                 scraper: scraper
                 caller: caller
@@ -246,7 +280,7 @@ services:
               message:
               scraper:
               caller:
-              @timestamp:
+              time:
 
   fritz-exporter:
     # https://github.com/pdreker/fritz_exporter/issues/62
