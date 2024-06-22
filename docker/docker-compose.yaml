@@ -360,6 +360,8 @@ services:
       - loki
     expose:
       - 3000
+    volumes:
+      - ./video-viewer/:/data
     logging:
       driver: "loki"
       options:
