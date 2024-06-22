@@ -67,6 +67,28 @@ def delete_video(youtube_id):
 
 def generate_reset_button_html():
     return '''
+    <style>
+    button {
+        padding: 15px 25px;
+        font-size: 24px;
+        text-align: center;
+        cursor: pointer;
+        outline: none;
+        color: #fff;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 9px #999;
+    }
+
+    button:hover {background-color: #3e8e41}
+
+    button:active {
+        background-color: #3e8e41;
+        box-shadow: 0 5px #666;
+        transform: translateY(4px);
+    }
+    </style>
     <button onclick="resetPage()">Reset</button>
     <script>
     function resetPage() {
@@ -101,6 +123,18 @@ def generate_video_html(videos):
 
 def generate_form_html():
     return '''
+     <style>
+    input[type="text"], input[type="submit"] {
+        width: 100%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 18px;
+    }
+    </style>
     <form method="POST" action="/" oninput="validateForm()">
         <label for="title">Title:</label><br>
         <input type="text" id="title" name="title"><br>
@@ -119,6 +153,12 @@ def generate_form_html():
 
 def generate_delete_toggle_html():
     return '''
+    <style>
+    input[type="checkbox"] {
+        width: 25px;
+        height: 25px;
+    }
+    </style>
     <input type="checkbox" id="delete-toggle" onchange="toggleDelete()">Enable deletion of videos
     <script>
     function toggleDelete() {
