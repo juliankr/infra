@@ -1,4 +1,4 @@
-from python:3.9.9-slim-buster
+from python:3.12
 RUN pip install requests
 RUN pip install CherryPy
 COPY signalWebhook.py .

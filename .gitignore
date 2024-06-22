@@ -15,3 +15,4 @@ letsencrypt/
 docker/nginx_data
 strato-certbot/
 kubernetes/cert/
+video-viewer/data/
