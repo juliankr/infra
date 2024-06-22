@@ -24,11 +24,14 @@ def favicon():
 def home():
     with open('data/videos.yaml', 'r') as file:
         videos = yaml.safe_load(file)['videos']
-    html = '<!DOCTYPE html><html><body>'
+    html = '<!DOCTYPE html><html>'
+    html += generate_head_html()
+    html += '<body>'
     html += generate_reset_button_html()
     html += generate_video_html(videos)
     html += generate_form_html()
     html += generate_delete_toggle_html()
+    html += '</body></html>'
     return html
 
 @app.route('/', methods=['POST'])
@@ -178,6 +181,16 @@ def generate_delete_toggle_html():
             .catch(error => console.error('There has been a problem with your fetch operation: ', error));
         }
     </script>
+    '''
+
+def generate_head_html():
+    return '''
+    <head>
+        <meta name="apple-mobile-web-app-title" content="Your App Name">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="apple-touch-icon" href="/path/to/icon.png">
+    </head>
     '''
 
 # Start the server on port 3000
