@@ -186,10 +186,10 @@ def generate_delete_toggle_html():
 def generate_head_html():
     return '''
     <head>
-        <meta name="apple-mobile-web-app-title" content="Your App Name">
+        <meta name="apple-mobile-web-app-title" content="Video-viewer">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta name="apple-mobile-web-app-capable" content="yes">
-        <link rel="apple-touch-icon" href="/path/to/icon.png">
+        <link rel="apple-touch-icon" href="static/icon.png">
     </head>
     '''
 
