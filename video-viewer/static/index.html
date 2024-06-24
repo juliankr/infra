@@ -1,0 +1,22 @@
+<!DOCTYPE html><html>
+    <head>
+        <meta name="apple-mobile-web-app-title" content="Video-viewer">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="apple-touch-icon" href="static/icon.png">
+        <link rel="stylesheet" type="text/css" href="/static/styles.css">
+        <script src="/static/main.js" defer></script>
+    </head>
+    <body>
+        <button onclick="resetPage()">Reset</button>
+        <div id="video-list"></div>
+        <form method="POST" action="/" oninput="validateForm()">
+            <label for="title">Title:</label><br>
+            <input type="text" id="title" name="title"><br>
+            <label for="youtube_id">YouTube ID:</label><br>
+            <input type="text" id="youtube_id" name="youtube_id"><br>
+            <input type="submit" id="submit" value="Submit" disabled>
+        </form>
+        <input type="checkbox" id="delete-toggle" onchange="toggleDelete()">Enable deletion of videos
+    </body>
+</html>
