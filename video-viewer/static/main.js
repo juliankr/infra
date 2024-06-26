@@ -48,7 +48,7 @@ window.onload = function() {
                 videoElement.innerHTML = `
                     <h1>${video.title}<button class="delete-button" onclick="deleteVideo('${video.youtube_id}')">Delete</button></h1>
                     <div class="video-container">
-                        <iframe class="video-frame" src="https://www.youtube.com/embed/${video.youtube_id}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe class="video-frame" src="https://www.youtube.com/embed/${video.youtube_id}?start=10" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                 `;
                 videoList.appendChild(videoElement);
