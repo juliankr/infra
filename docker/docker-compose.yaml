@@ -347,6 +347,7 @@ services:
   
   loki:
     image: grafana/loki:2.9.2
+    restart: always
     container_name: loki
     ports:
       - "3100:3100"
