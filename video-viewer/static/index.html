@@ -10,7 +10,10 @@
     </head>
     <body>
         <button onclick="resetPage()">Reset</button>
-        <div id="video-list"></div>
+        <div id="content">
+            <div id="video-list"></div>
+            <div id="pagination-controls"></div>
+        </div>
         <form method="POST" action="/" oninput="validateForm()">
             <label for="title">Title:</label><br>
             <input type="text" id="title" name="title"><br>

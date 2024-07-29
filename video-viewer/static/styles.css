@@ -54,3 +54,8 @@ button:active {
 .delete-button {
     display: none;
 }
+
+.current-page {
+    background-color: #6b4caf;
+    color: white;
+}

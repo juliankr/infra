@@ -3,6 +3,7 @@ import yaml
 import os
 from pythonjsonlogger import jsonlogger
 import logging
+import re
 
 
 app = Flask(__name__)
@@ -37,6 +38,15 @@ def videos():
 def add_video():
     title = request.form.get('title')
     youtube_id = request.form.get('youtube_id')
+
+    # Regular expression to extract the video ID from a full YouTube URL
+    youtube_url_pattern = re.compile(
+        r'(?:https?://)?(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/)([a-zA-Z0-9_-]{11})'
+    )
+    match = youtube_url_pattern.match(youtube_id)
+    if match:
+        youtube_id = match.group(1)
+
     new_video = {'title': title, 'youtube_id': youtube_id}
 
     with open('data/videos.yaml', 'r') as file:
