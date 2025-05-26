@@ -58,33 +58,33 @@ services:
       options:
         loki-url: http://127.0.0.1:3100/loki/api/v1/push
 
-  signal-cli-rest-api:
-    container_name: signal-cli-rest-api
-    restart: 'always'
-    links:
-      - loki
-    image: bbernhard/signal-cli-rest-api:0.83
-    environment:
-      - MODE=normal #supported modes: json-rpc, native, normal
-      - AUTO_RECEIVE_SCHEDULE=0 22 * * * #enable this parameter on demand (see description below)
-    expose:
-      - 8080 #map docker port 8080 to host port 8080.
-    volumes:
-      - "${SIGNAL_DATA}:/home/.local/share/signal-cli"
-    logging:
-      driver: "loki"
-      options:
-        loki-url: http://127.0.0.1:3100/loki/api/v1/push
-        loki-pipeline-stages: |
-          - logfmt:
-              mapping:
-                level: level
-                msg: message
-                time: time
-          - labels:
-              level:
-              message:
-              time:
+  # signal-cli-rest-api:
+  #   container_name: signal-cli-rest-api
+  #   restart: 'always'
+  #   links:
+  #     - loki
+  #   image: bbernhard/signal-cli-rest-api:0.83
+  #   environment:
+  #     - MODE=normal #supported modes: json-rpc, native, normal
+  #     - AUTO_RECEIVE_SCHEDULE=0 22 * * * #enable this parameter on demand (see description below)
+  #   expose:
+  #     - 8080 #map docker port 8080 to host port 8080.
+  #   volumes:
+  #     - "${SIGNAL_DATA}:/home/.local/share/signal-cli"
+  #   logging:
+  #     driver: "loki"
+  #     options:
+  #       loki-url: http://127.0.0.1:3100/loki/api/v1/push
+  #       loki-pipeline-stages: |
+  #         - logfmt:
+  #             mapping:
+  #               level: level
+  #               msg: message
+  #               time: time
+  #         - labels:
+  #             level:
+  #             message:
+  #             time:
 
   prometheus:
     container_name: prometheus
@@ -353,23 +353,23 @@ services:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
 
-  video-viewer:
-    image: video-viewer
-    container_name: video-viewer
-    restart: always
-    links:
-      - loki
-    expose:
-      - 3000
-    volumes:
-      - ./video-viewer/:/data
-    logging:
-      driver: "loki"
-      options:
-        loki-url: http://127.0.0.1:3100/loki/api/v1/push
-        loki-pipeline-stages: |
-          - json:
-              expressions:
-                message: message
-          - labels:
-              message:
+  # video-viewer:
+  #   image: video-viewer
+  #   container_name: video-viewer
+  #   restart: always
+  #   links:
+  #     - loki
+  #   expose:
+  #     - 3000
+  #   volumes:
+  #     - ./video-viewer/:/data
+  #   logging:
+  #     driver: "loki"
+  #     options:
+  #       loki-url: http://127.0.0.1:3100/loki/api/v1/push
+  #       loki-pipeline-stages: |
+  #         - json:
+  #             expressions:
+  #               message: message
+  #         - labels:
+  #             message:
