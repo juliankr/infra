@@ -1,0 +1,113 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: argocd
+
+resources:
+- install.yaml
+- argocd.namespace.yaml
+- argocd.ingressroute.yaml
+- applications/grafana.application.yaml
+- applications/loki.application.yaml
+- applications/prometheus.application.yaml
+- applications/traefik.application.yaml
+- applications/registry.application.yaml
+- applications/argocd.application.yaml
+- applications/default.application.yaml
+- applications/metallb.application.yaml
+- applications/monitoring.application.yaml
+- applications/registry-data.application.yaml
+- applications/mariadb.application.yaml
+- applications/nextcloud.application.yaml
+
+# Patches to customize ArgoCD installation
+patches:
+- path: argocd-cm.configmap.yaml
+- path: argocd-cmd-params-cm.configmap.yaml
+- patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: argocd-dex-server
+      spec:
+        replicas: 0
+- patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: argocd-notifications-controller
+      spec:
+        replicas: 0
+- patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: argocd-applicationset-controller
+      spec:
+        replicas: 0
+- patch: |-
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: argocd-metrics
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8082"
+        prometheus.io/path: "/metrics"
+- patch: |-
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: argocd-server-metrics
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8083"
+        prometheus.io/path: "/metrics"
+- patch: |-
+    apiVersion: apps/v1
+    kind: StatefulSet
+    metadata:
+      name: argocd-application-controller
+    spec:
+      revisionHistoryLimit: 0
+      template:
+        spec:
+          containers:
+          - name: argocd-application-controller
+            resources:
+              requests:
+                memory: "384Mi"
+              limits:
+                memory: "384Mi"
+- patch: |-
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: argocd-repo-server
+    spec:
+      revisionHistoryLimit: 0
+      template:
+        spec:
+          containers:
+          - name: argocd-repo-server
+            resources:
+              requests:
+                memory: "512Mi"
+              limits:
+                memory: "1Gi"
+- patch: |-
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: argocd-server
+    spec:
+      revisionHistoryLimit: 0
+      template:
+        spec:
+          containers:
+          - name: argocd-server
+            resources:
+              requests:
+                memory: "128Mi"
+              limits:
+                memory: "128Mi"

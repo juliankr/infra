@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: signal
+  labels:
+    name: signal
+spec:
+  replicas: 1
+  revisionHistoryLimit: 0
+  selector:
+    matchLabels:
+      name: signal
+  template:
+    metadata:
+      labels:
+        name: signal
+    spec:
+      containers:
+      - name: signal
+        env:
+        - name: AUTO_RECEIVE_SCHEDULE
+          value: "0 22 * * *"
+        image: bbernhard/signal-cli-rest-api:0.95
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "256Mi"
+          limits:
+            memory: "256Mi"
+        # securityContext:
+        #   runAsNonRoot: false
+        #   allowPrivilegeEscalation: true
+        #   capabilities:
+        #     drop:
+        #     - ALL
+        #   privileged: false
+        #   readOnlyRootFilesystem: false
+        #   seccompProfile:
+        #     type: RuntimeDefault
+        ports:
+        - containerPort: 8080
+          name: http
+        volumeMounts:
+        - name: data
+          mountPath: /home/.local/share/signal-cli
+          subPath: signal
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: sd
+      - name: tmp
+        emptyDir: {}
+

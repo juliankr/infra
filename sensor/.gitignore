@@ -1,0 +1,18 @@
+# PlatformIO
+.pio/
+.vscode/
+
+# Build output
+lib/
+build/
+
+# Configuration files with secrets
+configuration.h
+
+# IDE files
+*.tmp
+*.bak
+
+# OS files
+.DS_Store
+Thumbs.db

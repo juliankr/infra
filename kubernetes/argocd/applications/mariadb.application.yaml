@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mariadb
+  namespace: argocd
+spec:
+  destination:
+    namespace: default
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    chart: mariadb
+    helm:
+      values: |-
+        metrics:
+          enabled: true
+        primary:
+          persistence:
+            existingClaim: sd
+            subPath: mariadb
+        secondary:
+          replicaCount: 0
+    repoURL: https://charts.bitnami.com/bitnami
+    targetRevision: 22.0.0
+  syncPolicy:
+    syncOptions:
+    - ApplyOutOfSyncOnly=true
+    - PruneLast=true
+    - RespectIgnoreDifferences=true
+  ignoreDifferences:
+  - kind: Secret
+    name: mariadb
+    jsonPointers:
+    - /data

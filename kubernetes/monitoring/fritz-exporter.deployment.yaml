@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fritz-exporter
+  namespace: monitoring
+  labels:
+    app: fritz-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fritz-exporter
+  template:
+    metadata:
+      labels:
+        app: fritz-exporter
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9787"
+        prometheus.io/path: "/metrics"
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        fsGroup: 65534
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: fritz-exporter
+        image: pdreker/fritz_exporter:2.6.0
+        ports:
+        - containerPort: 9787
+          name: metrics
+        envFrom:
+        - secretRef:
+            name: fritzbox
+        resources:
+          requests:
+            memory: "64Mi"
+          limits:
+            memory: "128Mi"
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 65534
+          runAsGroup: 65534
+          capabilities:
+            drop:
+            - ALL

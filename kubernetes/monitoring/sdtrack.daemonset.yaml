@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: sdtrack
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: sdtrack
+  template:
+    metadata:
+      labels:
+        app: sdtrack
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9001"
+        prometheus.io/path: "/metrics"
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      containers:
+      - name: sdtrack
+        image: python:3-alpine
+        resources:
+          requests:
+            memory: "64Mi"
+          limits:
+            memory: "64Mi"
+        command: ["/bin/sh"]
+        args:
+        - -c
+        - |
+          pip install prometheus_client
+          python3 -c "
+          import time
+          import os
+          from prometheus_client import start_http_server, Gauge
+          
+          folder_size = Gauge('folder_size_bytes', 'Size of folder in bytes', ['path', 'subfolder'])
+          
+          def get_folder_size(path):
+              total = 0
+              try:
+                  for dirpath, dirnames, filenames in os.walk(path):
+                      for filename in filenames:
+                          filepath = os.path.join(dirpath, filename)
+                          try:
+                              total += os.path.getsize(filepath)
+                          except:
+                              pass
+              except:
+                  pass
+              return total
+          
+          start_http_server(9001)
+          print('Started metrics server on port 9001')
+          
+          while True:
+              try:
+                  base_path = '/mnt/ssd'
+                  if os.path.exists(base_path):
+                      # Track each subfolder
+                      for item in os.listdir(base_path):
+                          item_path = os.path.join(base_path, item)
+                          if os.path.isdir(item_path):
+                              size = get_folder_size(item_path)
+                              folder_size.labels(path=item_path, subfolder=item).set(size)
+                              print(f'Updated {item}: {size} bytes')
+                      
+                      # Track total size
+                      total_size = get_folder_size(base_path)
+                      folder_size.labels(path=base_path, subfolder='total').set(total_size)
+                      print(f'Updated total: {total_size} bytes')
+                  
+              except Exception as e:
+                  print(f'Error collecting metrics: {e}')
+              
+              time.sleep(300)  # Update every 5 minutes
+          "
+        volumeMounts:
+        - name: sdtrack-volume
+          mountPath: /mnt/ssd
+          readOnly: true
+        ports:
+        - containerPort: 9001
+          name: metrics
+      volumes:
+      - name: sdtrack-volume
+        persistentVolumeClaim:
+          claimName: sdtrack
+          readOnly: true

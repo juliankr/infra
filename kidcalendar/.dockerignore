@@ -1,0 +1,49 @@
+# Node modules
+node_modules/
+npm-debug.log*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+.venv/
+venv/
+
+# Configuration files (should be mounted)
+backend/events.yaml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Git
+.git/
+.gitignore
+
+# Build artifacts
+dist/
+build/
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Development
+.env.local
+.env.development
+
+# Test coverage
+coverage/

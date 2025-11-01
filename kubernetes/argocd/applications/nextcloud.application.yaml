@@ -1,0 +1,56 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nextcloud
+  namespace: argocd
+spec:
+  destination:
+    namespace: default
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    chart: nextcloud
+    helm:
+      values: |-
+        startupProbe:
+          enabled: true
+        internalDatabase:
+          enabled: false
+        externalDatabase:
+          enabled: true
+          host: mariadb:3306
+          user: admin
+          existingSecret:
+            enabled: true
+            secretName: nextcloud-mariadb
+            passwordKey: password
+            usernameKey: username
+        persistence:
+          enabled: true
+          existingClaim: sd
+          subPath: nextcloud
+        nextcloud:
+          host: nc-test.example.com
+          persistence:
+            subPath: nextcloud
+        resources:
+          requests:
+            memory: 1Gi
+          limits:
+            memory: 1Gi
+        collabora:
+          enabled: true
+          requests:
+            memory: 1Gi
+          limits:
+            memory: 1Gi
+          collabora:
+            extra_params: "--o:ssl.enable=false --o:ssl.termination=true"
+        cronjob:
+          enabled: true
+    repoURL: https://nextcloud.github.io/helm/
+    targetRevision: 7.0.4
+  syncPolicy:
+    syncOptions:
+    - PruneLast=true
+    - ApplyOutOfSyncOnly=true

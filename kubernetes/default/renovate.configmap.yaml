@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: renovate
+  namespace: default
+data:
+  config.json: |
+    {
+      "repositories": ["juliankr/kubernetes"],
+      "platform": "github",
+      "gitAuthor": "Renovate Bot <bot@renovateapp.com>",
+      "onboarding": false,
+      "requireConfig": "optional",
+      "forkProcessing": "enabled",
+      "dependencyDashboard": true,
+      "dependencyDashboardTitle": "Dependency Dashboard",
+      "rebaseWhen": "conflicted",
+      "commitMessageAction": "Update",
+      "commitMessageTopic": "{{depName}}",
+      "commitMessageExtra": "to {{newVersion}}",
+      "semanticCommits": "enabled",
+      "schedule": ["at any time"],
+      "timezone": "Europe/Berlin",
+      "labels": ["dependencies"],
+      "reviewersFromCodeOwners": true,
+      "prConcurrentLimit": 10,
+      "prHourlyLimit": 0,
+      "ignorePaths": [
+        "kubernetes/argocd/install.yaml",
+        "kubernetes/metallb/metallb.yaml"
+      ],
+      "helm-values": {
+        "managerFilePatterns": ["/\\.ya?ml$/"]
+      },
+      "kubernetes": {
+        "managerFilePatterns": ["/\\.ya?ml$/"]
+      },
+      "argocd": {
+        "managerFilePatterns": ["/applications/.*\\.ya?ml$/"]
+      },
+      "packageRules": [
+        {
+          "matchDatasources": ["docker"],
+          "matchUpdateTypes": ["major"],
+          "enabled": true
+        },
+        {
+          "matchDatasources": ["helm"],
+          "matchUpdateTypes": ["major", "minor", "patch"],
+          "enabled": true
+        },
+        {
+          "enabled": true,
+          "matchPackageNames": ["*", "!/^(local|file)://.*/"]}
+      ]
+    }

@@ -1,0 +1,15 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: kidcalendar
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`cal.example.com`)
+    kind: Rule
+    services:
+    - name: kidcalendar
+      port: 80
+  tls:
+    secretName: cert

@@ -1,0 +1,83 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: certbot
+  namespace: default
+spec:
+  schedule: "0 19 1 * *"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          restartPolicy: Never
+          serviceAccountName: certbot
+          containers:
+          - name: certbot
+            image: python:3.13.7
+            resources:
+              requests:
+                memory: "128Mi"
+              limits:
+                memory: "128Mi"
+            envFrom:
+            - secretRef:
+                name: signal
+            command: ["/bin/bash"]
+            args:
+            - -c
+            - |-
+              set -e 
+              TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+              curl -X POST --insecure -H "Content-Type: application/json" -d \
+                '{"message": "Start '"$TIMESTAMP"' setup strato for new cert", "number": "'"$SIGNAL_SOURCE_NUMBER"'", "recipients": ["'"$SIGNAL_TARGET_NUMBER"'"]}' \
+                "http://signal/v2/send"
+
+              git clone --depth 1 https://github.com/Buxdehuda/strato-certbot.git /tmp/strato-certbot
+
+              # Make hook scripts executable
+              chmod +x /tmp/strato-certbot/strato_certbot/*.py
+
+              # Install uv package manager
+              pip install uv
+
+              # Change to the strato-certbot directory and install the package in development mode
+              cd /tmp/strato-certbot
+              uv pip install --system -e .
+
+              pip install certbot
+
+              certbot -n certonly --server https://acme-v02.api.letsencrypt.org/directory -d "*.example.com" --email "julian@example.com" --preferred-challenges dns --manual --config-dir /letsencrypt --work-dir /letsencrypt --logs-dir /letsencrypt --manual-auth-hook "strato_certbot/auth_hook.py /certbotconfig/strato-auth.json" --manual-cleanup-hook "strato_certbot/cleanup_hook.py /certbotconfig/strato-auth.json"
+
+              curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+
+              chmod +x kubectl
+
+              ./kubectl create secret tls cert \
+                --cert=/letsencrypt/live/example.com-0001/fullchain.pem \
+                --key=/letsencrypt/live/example.com-0001/privkey.pem \
+                --dry-run=client -o yaml | ./kubectl apply -f -
+
+              curl -X POST --insecure -H "Content-Type: application/json" -d \
+                '{"message": "Finished setup strato for new cert", "number": "'"$SIGNAL_SOURCE_NUMBER"'", "recipients": ["'"$SIGNAL_TARGET_NUMBER"'"]}' \
+                "http://signal/v2/send"
+            volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: certbot-config
+              mountPath: /certbotconfig
+              readOnly: true
+            - mountPath: /letsencrypt
+              name: data
+              subPath: certbot
+          volumes:
+          - name: tmp
+            emptyDir: {}
+          - name: data
+            persistentVolumeClaim:
+              claimName: sd
+          - name: certbot-config
+            secret:
+              secretName: certbot

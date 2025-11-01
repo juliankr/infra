@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: video-viewer
+spec:
+  selector:
+    name: video-viewer
+  ports:
+  - port: 80
+    targetPort: 3000
+    name: http

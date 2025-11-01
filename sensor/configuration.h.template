@@ -1,0 +1,56 @@
+// CO2 Sensor Configuration Template
+// Copy this file to configuration.h and update with your actual values
+
+#ifndef CONFIGURATION_H
+#define CONFIGURATION_H
+
+// =============================================================================
+// WiFi Configuration
+// =============================================================================
+const char* WIFI_SSID = "YOUR_WIFI_SSID";
+const char* WIFI_PASSWORD = "YOUR_WIFI_PASSWORD";
+
+// =============================================================================
+// Device Configuration
+// =============================================================================
+const char* DEVICE_NAME = "co2-sensor-01";
+
+// =============================================================================
+// Network Configuration
+// =============================================================================
+const int HTTP_PORT = 80;
+
+// =============================================================================
+// Timing Configuration (in milliseconds)
+// =============================================================================
+const unsigned long MEASUREMENT_INTERVAL = 30000; // How often to read sensor (30 seconds)
+const unsigned long WIFI_CHECK_INTERVAL = 30000;  // How often to check WiFi connection (30 seconds)
+const unsigned long SERIAL_BAUD_RATE = 115200;    // Serial communication speed
+const unsigned long STARTUP_DELAY = 1000;         // Initial startup delay
+const unsigned long SENSOR_INIT_DELAY = 500;      // Delay between sensor stop/start
+
+// =============================================================================
+// Hardware Configuration
+// =============================================================================
+const int I2C_SDA_PIN = 21;                       // I2C SDA pin (GPIO21)
+const int I2C_SCL_PIN = 22;                       // I2C SCL pin (GPIO22)
+const uint8_t SENSOR_I2C_ADDRESS = 0x62;          // SCD41 I2C address
+
+// =============================================================================
+// WiFi Connection Configuration
+// =============================================================================
+const int WIFI_MAX_ATTEMPTS = 20;                 // Maximum WiFi connection attempts
+const unsigned long WIFI_RETRY_DELAY = 500;      // Delay between WiFi connection attempts
+
+// =============================================================================
+// Loop Configuration
+// =============================================================================
+const unsigned long MAIN_LOOP_DELAY = 100;       // Main loop delay to prevent watchdog issues
+
+// =============================================================================
+// Sensor Data Formatting
+// =============================================================================
+const int TEMPERATURE_DECIMAL_PLACES = 2;         // Decimal places for temperature display
+const int HUMIDITY_DECIMAL_PLACES = 1;            // Decimal places for humidity display
+
+#endif

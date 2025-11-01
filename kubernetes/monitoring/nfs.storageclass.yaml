@@ -1,0 +1,19 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: nfs
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "false"
+provisioner: k8s.io/nfs-subdir-external-provisioner
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+volumeBindingMode: Immediate
+parameters:
+  server: 192.168.0.54
+  path: /mnt/ssd
+  onDelete: retain
+  pathPattern: "${.PVC.namespace}-${.PVC.name}"
+mountOptions:
+  - nfsvers=4.1
+  - nolock
+  - hard

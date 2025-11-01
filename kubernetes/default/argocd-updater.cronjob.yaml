@@ -1,0 +1,89 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: argocd-updater
+  namespace: default
+spec:
+  schedule: "0 6 * * 1"  # Weekly on Monday at 6am
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: argocd-updater
+            image: debian:bookworm-slim
+            resources:
+              requests:
+                memory: "256Mi"
+              limits:
+                memory: "256Mi"
+            env:
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: renovate
+                  key: token
+            command: ["/bin/bash"]
+            args:
+            - -c
+            - |-
+              set -e
+              
+              # Install required packages
+              apt-get update && apt-get install -y git curl
+              
+              # Configure git
+              git config --global user.name "ArgoCD Bot"
+              git config --global user.email "bot@example.com"
+              
+              # Clone repository
+              git clone --depth 1 https://x-access-token:${GITHUB_TOKEN}@github.com/juliankr/kubernetes.git /tmp/repo
+              cd /tmp/repo
+              
+              # Download latest ArgoCD install.yaml
+              curl -s -L https://raw.githubusercontent.com/argoproj/argo-cd/master/manifests/install.yaml > /tmp/new-install.yaml
+              
+              # Check if file differs
+              if ! cmp -s /tmp/new-install.yaml kubernetes/argocd/install.yaml; then
+                echo "ArgoCD install.yaml has changes, creating PR..."
+                
+                # Create new branch
+                BRANCH_NAME="argocd-update-$(date +%Y%m%d-%H%M%S)"
+                git checkout -b "$BRANCH_NAME"
+                
+                # Copy new file
+                cp /tmp/new-install.yaml kubernetes/argocd/install.yaml
+                
+                # Commit changes
+                git add kubernetes/argocd/install.yaml
+                git commit -m "Update ArgoCD install.yaml to latest version"
+                
+                # Push branch
+                git push origin "$BRANCH_NAME"
+                
+                # Create PR using GitHub API
+                curl -X POST \
+                  -H "Authorization: token ${GITHUB_TOKEN}" \
+                  -H "Accept: application/vnd.github.v3+json" \
+                  https://api.github.com/repos/juliankr/kubernetes/pulls \
+                  -d "{
+                    \"title\": \"ArgoCD Update\",
+                    \"head\": \"$BRANCH_NAME\",
+                    \"base\": \"master\",
+                    \"body\": \"Automated update of ArgoCD install.yaml to latest version from upstream repository.\"
+                  }"
+                
+                echo "PR created successfully"
+              else
+                echo "No changes detected in ArgoCD install.yaml"
+              fi
+            volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          volumes:
+          - name: tmp
+            emptyDir: {}

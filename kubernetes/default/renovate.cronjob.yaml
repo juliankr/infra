@@ -1,0 +1,64 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: renovate
+  namespace: default
+spec:
+  schedule: "0 17 * * 0"  # Every Sunday at 5pm
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: renovate
+            image: renovate/renovate:41
+            env:
+            - name: RENOVATE_PLATFORM
+              value: "github"
+            - name: RENOVATE_ENDPOINT
+              value: "https://api.github.com/"
+            - name: RENOVATE_AUTODISCOVER
+              value: "false"
+            - name: RENOVATE_BASE_BRANCHES
+              value: '["master"]'
+            - name: RENOVATE_DRY_RUN
+              value: "false"
+            - name: RENOVATE_PRINT_CONFIG
+              value: "true"
+            - name: LOG_LEVEL
+              value: "info"
+            - name: RENOVATE_REPOSITORIES
+              value: '["juliankr/kubernetes"]'
+            - name: RENOVATE_GIT_URL
+              value: "https"
+            - name: RENOVATE_USERNAME
+              value: "renovate[bot]"
+            - name: RENOVATE_GIT_AUTHOR
+              value: "Renovate Bot <bot@renovateapp.com>"
+            - name: RENOVATE_REQUIRE_CONFIG
+              value: "optional"
+            - name: RENOVATE_CONFIG_FILE
+              value: "/usr/src/app/config.json"
+            - name: GITHUB_COM_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: renovate
+                  key: token
+            - name: RENOVATE_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: renovate
+                  key: token
+            volumeMounts:
+            - name: renovate-config
+              mountPath: /usr/src/app/config.json
+              subPath: config.json
+            securityContext:
+              runAsUser: 1000
+              runAsGroup: 1000
+          volumes:
+          - name: renovate-config
+            configMap:
+              name: renovate

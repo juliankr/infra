@@ -1,0 +1,61 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus
+  namespace: argocd
+spec:
+  destination:
+    namespace: monitoring
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    chart: prometheus
+    helm:
+      values: |-
+          prometheus:
+            revisionHistoryLimit: 0
+            resources:
+              limits:
+                memory: 64Mi
+              requests:
+                memory: 64Mi
+          kube-state-metrics:
+            revisionHistoryLimit: 0
+            resources:
+              requests:
+                memory: 128Mi
+              limits:
+                memory: 128Mi
+          prometheus-pushgateway:
+            revisionHistoryLimit: 0
+            resources:
+              requests:
+                memory: 64Mi
+              limits:
+                memory: 64Mi
+          server:
+            revisionHistoryLimit: 0
+            retention: "365d"
+            resources:
+              limits:
+                memory: 512Mi
+              requests:
+                memory: 512Mi
+            persistentVolume:
+              existingClaim: prometheus
+            extraConfigmapMounts: 
+            - name: prometheus-additional-scrape-configs
+              mountPath: /prometheus/config
+              configMap: prometheus-additional-scrape-configs
+              readOnly: true
+          scrapeConfigFiles:
+            - /prometheus/config/proxmox.yml
+          alertmanager:
+            enabled: false
+    repoURL: https://prometheus-community.github.io/helm-charts
+    targetRevision: 27.41.1
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    - ApplyOutOfSyncOnly=true
+    - PruneLast=true

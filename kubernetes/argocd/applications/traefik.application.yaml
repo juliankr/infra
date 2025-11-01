@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: traefik
+  namespace: argocd
+spec:
+  destination:
+    namespace: traefik
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    chart: traefik
+    helm:
+      values: |-
+        revisionHistoryLimit: 0
+        resources:
+          requests:
+            memory: 256Mi
+          limits:
+            memory: 256Mi
+    repoURL: https://traefik.github.io/charts
+    targetRevision: 37.1.2
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    - ApplyOutOfSyncOnly=true
+    - PruneLast=true

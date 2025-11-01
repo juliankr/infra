@@ -1,0 +1,35 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: default
+
+resources:
+- sd.persistentvolumeclaim.yaml
+- sd.persistentvolume.yaml
+- video-viewer.deployment.yaml
+- video-viewer.service.yaml
+- video-viewer.ingressroute.yaml
+- signal.deployment.yaml
+- signal.service.yaml
+- signal.ingressroute.yaml
+- nextcloud.ingressroute.yaml
+- phpmyadmin.deployment.yaml 
+- phpmyadmin.ingressroute.yaml 
+- phpmyadmin.service.yaml
+- phpmyadmin.configmap.yaml
+- renovate.cronjob.yaml
+- renovate.configmap.yaml
+- certbot.rbac.yaml
+- certbot.cronjob.yaml
+- certcheck.cronjob.yaml
+- argocd-updater.cronjob.yaml
+- collabora.ingressroute.yaml
+- signal-webhook.deployment.yaml
+- signal-webhook.service.yaml
+- signal-webhook.configmap.yaml
+- kidcalendar.deployment.yaml
+- kidcalendar.ingressroute.yaml
+- kidcalendar.service.yaml
+- wishlist.deployment.yaml 
+- wishlist.ingressroute.yaml 
+- wishlist.service.yaml

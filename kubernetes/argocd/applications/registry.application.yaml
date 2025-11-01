@@ -1,0 +1,51 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: registry
+  namespace: argocd
+spec:
+  destination:
+    namespace: registry
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    chart: docker-registry
+    helm:
+      values: |-
+          persistence:
+            existingClaim: registry
+            enabled: true
+          revisionHistoryLimit: 0
+          resources:
+            limits:
+              memory: 128Mi
+            requests:
+              memory: 128Mi
+          metrics:
+            enabled: true
+          podAnnotations:
+            prometheus.io/scrape: "true"
+            prometheus.io/port: "5001"
+            prometheus.io/path: "/metrics"
+          configData:
+            http:
+              debug:
+                prometheus:
+                    enabled: true
+    repoURL: https://helm.twun.io
+    targetRevision: 3.0.0
+  syncPolicy:
+    syncOptions:
+    - ApplyOutOfSyncOnly=true
+    - PruneLast=true
+        - RespectIgnoreDifferences=true
+  ignoreDifferences:
+  - kind: Secret
+    name: registry-docker-registry-secret
+    jsonPointers:
+    - /data
+  - group: "apps"
+    kind: Deployment
+    name: registry-docker-registry
+    jsonPointers:
+    - /spec/template/metadata/annotations/checksum~1secret
