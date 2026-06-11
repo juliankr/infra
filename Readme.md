@@ -51,5 +51,5 @@ Prometheus collects the data, and Grafana displays it on a dashboard. I deployed
 ## signalWebhook
 A simple web service that converts Grafana webhook alerts into Signal messages.
 
-# License
+## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

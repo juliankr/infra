@@ -12,14 +12,19 @@ spec:
     chart: traefik
     helm:
       values: |-
-        revisionHistoryLimit: 0
         resources:
           requests:
             memory: 256Mi
           limits:
             memory: 256Mi
+        logs:
+          access:
+            enabled: true
+        service:
+          spec:
+            externalTrafficPolicy: Local
     repoURL: https://traefik.github.io/charts
-    targetRevision: 37.1.2
+    targetRevision: 40.2.0
   syncPolicy:
     syncOptions:
     - CreateNamespace=true

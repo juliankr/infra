@@ -1,5 +1,5 @@
 # Multi-stage build for Kids Calendar
-FROM node:24-alpine AS frontend-builder
+FROM node:25-alpine AS frontend-builder
 
 # Set working directory for frontend build
 WORKDIR /app/frontend
@@ -18,7 +18,7 @@ RUN npm install
 RUN npm run build
 
 # Python backend stage
-FROM python:3.13-slim
+FROM python:3.14-slim
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1

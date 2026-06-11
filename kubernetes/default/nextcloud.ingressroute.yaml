@@ -1,4 +1,14 @@
 apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: nextcloud-hsts
+spec:
+  headers:
+    stsSeconds: 15552000
+    stsIncludeSubdomains: true
+    stsPreload: true
+---
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: nextcloud
@@ -8,6 +18,8 @@ spec:
   routes:
   - match: Host(`nc-test.example.com`) || Host(`nc.example.com`) || Host(`nextcloud.example.com`)
     kind: Rule
+    middlewares:
+    - name: nextcloud-hsts
     services:
     - name: nextcloud
       port: 8080

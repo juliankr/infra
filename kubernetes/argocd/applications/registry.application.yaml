@@ -32,7 +32,10 @@ spec:
               debug:
                 prometheus:
                     enabled: true
-    repoURL: https://helm.twun.io
+          extraEnvVars:
+            - name: OTEL_TRACES_EXPORTER
+              value: none
+    repoURL: https://twuni.github.io/docker-registry.helm
     targetRevision: 3.0.0
   syncPolicy:
     syncOptions:

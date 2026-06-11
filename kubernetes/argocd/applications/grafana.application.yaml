@@ -40,7 +40,7 @@ spec:
                 maxLines: 1000
 
     repoURL: https://grafana.github.io/helm-charts
-    targetRevision: 10.1.2
+    targetRevision: 10.5.15
   syncPolicy:
     syncOptions:
     - CreateNamespace=true

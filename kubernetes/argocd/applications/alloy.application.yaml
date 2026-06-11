@@ -1,0 +1,96 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: alloy
+  namespace: argocd
+spec:
+  destination:
+    namespace: monitoring
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    chart: alloy
+    repoURL: https://grafana.github.io/helm-charts
+    targetRevision: 1.8.1
+    helm:
+      values: |-
+        alloy:
+          configMap:
+            content: |-
+              // Discover Kubernetes Pods
+              // This is a basic configuration to collect logs from all pods
+              discovery.kubernetes "pods" {
+                role = "pod"
+              }
+
+              // Drop pods that should not be logged or format log lines
+              discovery.relabel "pods" {
+                targets = discovery.kubernetes.pods.targets
+                rule {
+                  source_labels = ["__meta_kubernetes_pod_node_name"]
+                  target_label  = "__host__"
+                }
+                rule {
+                  source_labels = ["__meta_kubernetes_namespace"]
+                  target_label  = "namespace"
+                }
+                rule {
+                  source_labels = ["__meta_kubernetes_pod_name"]
+                  target_label  = "pod"
+                }
+                rule {
+                  source_labels = ["__meta_kubernetes_pod_container_name"]
+                  target_label  = "container"
+                }
+                rule {
+                  source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_pod_name"]
+                  separator     = "/"
+                  target_label  = "job"
+                }
+              }
+
+              // Tail the logs from the discovered targets
+              loki.source.kubernetes "pods" {
+                targets    = discovery.relabel.pods.output
+                forward_to = [loki.process.parse.receiver]
+              }
+
+              // Process and format the logs before sending to Loki
+              loki.process "parse" {
+                forward_to = [loki.write.local.receiver]
+
+                // Extract standard Docker or CRI format wrappers (e.g. "time stdout F ...")
+                stage.docker {}
+                stage.cri {}
+
+                // Optionally extract common fields if logged as JSON
+                stage.json {
+                  expressions = {
+                    level = "level",
+                    caller = "caller",
+                  }
+                  // Only run this stage if it looks like JSON (to not fail on plain text logs)
+                  drop_malformed = true
+                }
+
+                // Map the extracted fields as prominent labels for easy filtering in Grafana
+                stage.labels {
+                  values = {
+                    level = "",
+                    caller = "",
+                  }
+                }
+              }
+
+              // Send logs to your internal Loki instance
+              // Since we disabled the Loki gateway, we send directly to the Loki member service
+              loki.write "local" {
+                endpoint {
+                  url = "http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push"
+                }
+              }
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
+      - PruneLast=true

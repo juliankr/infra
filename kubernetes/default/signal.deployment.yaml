@@ -20,7 +20,7 @@ spec:
         env:
         - name: AUTO_RECEIVE_SCHEDULE
           value: "0 22 * * *"
-        image: bbernhard/signal-cli-rest-api:0.95
+        image: bbernhard/signal-cli-rest-api:0.99
         imagePullPolicy: Always
         resources:
           requests:

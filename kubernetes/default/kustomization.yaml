@@ -6,6 +6,9 @@ namespace: default
 resources:
 - sd.persistentvolumeclaim.yaml
 - sd.persistentvolume.yaml
+- mariadb-data.persistentvolume.yaml
+- mariadb-data.persistentvolumeclaim.yaml
+- mariadb.mariadb.yaml
 - video-viewer.deployment.yaml
 - video-viewer.service.yaml
 - video-viewer.ingressroute.yaml
@@ -13,8 +16,8 @@ resources:
 - signal.service.yaml
 - signal.ingressroute.yaml
 - nextcloud.ingressroute.yaml
-- phpmyadmin.deployment.yaml 
-- phpmyadmin.ingressroute.yaml 
+- phpmyadmin.deployment.yaml
+- phpmyadmin.ingressroute.yaml
 - phpmyadmin.service.yaml
 - phpmyadmin.configmap.yaml
 - renovate.cronjob.yaml
@@ -30,6 +33,6 @@ resources:
 - kidcalendar.deployment.yaml
 - kidcalendar.ingressroute.yaml
 - kidcalendar.service.yaml
-- wishlist.deployment.yaml 
-- wishlist.ingressroute.yaml 
+- wishlist.deployment.yaml
+- wishlist.ingressroute.yaml
 - wishlist.service.yaml

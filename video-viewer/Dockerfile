@@ -1,4 +1,4 @@
-from python:3.13
+from python:3.14
 COPY static/ ./static/
 COPY main.py .
 COPY requirements.txt .

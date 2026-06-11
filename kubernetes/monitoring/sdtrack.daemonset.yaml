@@ -23,9 +23,9 @@ spec:
         image: python:3-alpine
         resources:
           requests:
-            memory: "64Mi"
+            memory: "128Mi"
           limits:
-            memory: "64Mi"
+            memory: "128Mi"
         command: ["/bin/sh"]
         args:
         - -c

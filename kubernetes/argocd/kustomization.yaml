@@ -17,8 +17,10 @@ resources:
 - applications/metallb.application.yaml
 - applications/monitoring.application.yaml
 - applications/registry-data.application.yaml
-- applications/mariadb.application.yaml
 - applications/nextcloud.application.yaml
+- applications/mariadb-operator.application.yaml
+- applications/mariadb-operator-crds.application.yaml
+- applications/alloy.application.yaml
 
 # Patches to customize ArgoCD installation
 patches:
@@ -94,7 +96,7 @@ patches:
               requests:
                 memory: "512Mi"
               limits:
-                memory: "1Gi"
+                memory: "768Mi"
 - patch: |-
     apiVersion: apps/v1
     kind: Deployment

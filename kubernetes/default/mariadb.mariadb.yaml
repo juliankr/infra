@@ -1,0 +1,34 @@
+apiVersion: k8s.mariadb.com/v1alpha1
+kind: MariaDB
+metadata:
+  name: mariadb
+  namespace: default
+spec:
+  rootPasswordSecretKeyRef:
+    name: mariadb
+    key: mariadb-root-password
+
+  port: 3306
+
+  storage:
+    volumeClaimTemplate:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ""
+      resources:
+        requests:
+          storage: 50Gi
+
+  podSecurityContext:
+    runAsUser: 1001
+    runAsGroup: 1001
+    fsGroup: 1001
+
+  metrics:
+    enabled: false
+
+  resources:
+    requests:
+      memory: 128Mi
+    limits:
+      memory: 512Mi

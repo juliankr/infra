@@ -16,7 +16,7 @@ spec:
           serviceAccountName: certbot
           containers:
           - name: certbot
-            image: python:3.13.7
+            image: python:3.14.4
             resources:
               requests:
                 memory: "128Mi"

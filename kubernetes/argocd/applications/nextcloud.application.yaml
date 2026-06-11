@@ -33,11 +33,18 @@ spec:
           host: nc-test.example.com
           persistence:
             subPath: nextcloud
+          configs:
+            proxy.config.php: |-
+              <?php
+              $CONFIG = array (
+                'trusted_proxies' => ['10.244.0.0/16'],
+                'forwarded_for_headers' => ['HTTP_X_FORWARDED_FOR'],
+              );
         resources:
           requests:
-            memory: 1Gi
+            memory: 2048Mi
           limits:
-            memory: 1Gi
+            memory: 2048Mi
         collabora:
           enabled: true
           requests:
@@ -49,7 +56,7 @@ spec:
         cronjob:
           enabled: true
     repoURL: https://nextcloud.github.io/helm/
-    targetRevision: 7.0.4
+    targetRevision: 9.0.6
   syncPolicy:
     syncOptions:
     - PruneLast=true

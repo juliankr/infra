@@ -28,7 +28,7 @@ spec:
           type: RuntimeDefault
       containers:
       - name: fritz-exporter
-        image: pdreker/fritz_exporter:2.6.0
+        image: pdreker/fritz_exporter:2.6.2
         ports:
         - containerPort: 9787
           name: metrics

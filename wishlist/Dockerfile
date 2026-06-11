@@ -1,6 +1,6 @@
 # Multi-stage Docker build for Wishlist App
 # Stage 1: Build Vue.js frontend
-FROM node:18-alpine AS frontend-build
+FROM node:25-alpine AS frontend-build
 
 WORKDIR /app/frontend
 
@@ -13,7 +13,7 @@ COPY frontend/ ./
 RUN npm run build
 
 # Stage 2: Python backend with static frontend
-FROM python:3.11-slim
+FROM python:3.14-slim
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1

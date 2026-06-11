@@ -11,8 +11,25 @@ class MyWebService(object):
   def send(self):
     data = cherrypy.request.json
 
+    # Extract readable information from the alert
+    status = data.get("status", "unknown")
+
+    # Get info from the first alert (there could be multiple)
+    alerts = data.get("alerts", [])
+    if alerts:
+        alert = alerts[0]
+        labels = alert.get("labels", {})
+        room = labels.get("room", "unknown")
+        alertname = labels.get("alertname", "unknown")
+    else:
+        room = "unknown"
+        alertname = "unknown"
+
+    # Format a readable message
+    readable_message = f"Alert: {alertname}\nRoom: {room}\nStatus: {status.upper()}"
+
     url = os.getenv("SIGNAL_CLI_REST_API_BASE_URL") + "/v2/send"
-    message = {"message": json.dumps(data), "number": os.getenv("SOURCE_NUMBER"), "recipients": [os.getenv("TARGET_NUMBER")]}
+    message = {"message": readable_message, "number": os.getenv("SOURCE_NUMBER"), "recipients": [os.getenv("TARGET_NUMBER")]}
     x = requests.post(url, json = message)
 
     return x.text
